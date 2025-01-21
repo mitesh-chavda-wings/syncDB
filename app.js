@@ -1,10 +1,19 @@
 const express = require("express");
+const path = require("path");
 const { insertData, connections } = require("./services/dbService");
 const { checkDatabaseStatus } = require("./services/healthCheck");
 const { syncDatabase } = require("./sync/syncService");
 
 const app = express();
 app.use(express.json());
+
+// Serve static files from the public directory
+app.use(express.static(path.join(__dirname, "public")));
+
+// Root route to serve the welcome page
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
 
 // Insert data into active databases
 app.post("/insert", async (req, res) => {
